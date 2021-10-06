@@ -1,0 +1,27 @@
+ETHERCAT:
+  MASTERIDX:  0
+  APPTIMEPERIOD:  1000000
+  REFCLOCKSYNCCYCLES:  -1
+  SLAVES:
+  - EK1100
+  - EL1008
+  - EL1008
+  - EL1008
+  - EL1008
+  - EL2008
+  - EL2008
+  - EL7342
+  - EL7342
+  - EL9576
+  - EL6900
+  - EL1904
+  - EL2904
+  - EL9505
+
+REMAP:
+  lcec.0.7.srv-0-cmd:  'cmd_motor_1.7'
+  lcec.0.7.srv-1-cmd:  'cmd_motor_2.7'
+  lcec.0.8.srv-0-enable:  'status_motor_1.8'
+  lcec.0.8.srv-1-enable:  'status_motor_2.8'
+  lcec.0.2.din-6-not:  'R_swtich'
+  lcec.0.2.din-4-not:  'L_switch'
