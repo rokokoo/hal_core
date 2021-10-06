@@ -32,5 +32,8 @@ cd /opt/hal-core/src/hal/components/threads/ && ./make
 # chmod +x /opt/hal-core/src/hal/components/dofs/make
 # cd /opt/hal-core/src/hal/components/dofs/ && ./make
 
-# Make a symbolic link for system wide usage
+# Remove the actual halcmd that came with the image
+sudo rm /usr/bin/halcmd
+
+# Make a symbolic from new halcmd link for system wide usage
 ln -s /opt/hal-core/bin/halcmd /usr/bin/halcmd
