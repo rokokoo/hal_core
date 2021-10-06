@@ -32,4 +32,5 @@ cd /opt/hal-core/src/hal/components/threads/ && ./make
 # chmod +x /opt/hal-core/src/hal/components/dofs/make
 # cd /opt/hal-core/src/hal/components/dofs/ && ./make
 
-
+# Make a symbolic link for system wide usage
+ln -s /opt/hal-core/bin/halcmd /usr/bin/halcmd
