@@ -10,8 +10,8 @@ ETHERCAT:
   - EL1008
   - EL2008
   - EL2008
-  - EL7342
-  - EL7342
+  - EL7342: {name: 'motor1'}
+  - EL7342: {name: 'motor2'}
   - EL9576
   - EL6900
   - EL1904
