@@ -1,0 +1,5 @@
+<launch>
+
+	<rosparam command="load" file="$(find icim_msgs)/config/hal.yaml" />
+	<!-- <node name="hal_populator" pkg="icim_msgs" type="populate.py" args="-param hal_params" /> -->
+</launch>

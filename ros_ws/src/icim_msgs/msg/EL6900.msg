@@ -1,0 +1,16 @@
+# bit  |  OUT  |  TRUE    |    lcec.0.11.fsoe-in-0
+# bit  |  OUT  |  FALSE    |    lcec.0.11.fsoe-in-1
+# bit  |  OUT  |  TRUE    |    lcec.0.11.fsoe-in-2
+# bit  |  OUT  |  FALSE    |    lcec.0.11.fsoe-in-3
+# u32  |  OUT  |  0x00000008    |    lcec.0.11.fsoe-master-cmd
+# u32  |  OUT  |  0x00000001    |    lcec.0.11.fsoe-master-connid
+# u32  |  OUT  |  0x00006949    |    lcec.0.11.fsoe-master-crc
+# u32  |  OUT  |  0x00000036    |    lcec.0.11.fsoe-slave-cmd
+# u32  |  OUT  |  0x00000001    |    lcec.0.11.fsoe-slave-connid
+# u32  |  OUT  |  0x0000F3A7    |    lcec.0.11.fsoe-slave-crc
+# bit  |  OUT  |  TRUE    |    lcec.0.11.slave-online
+# bit  |  OUT  |  TRUE    |    lcec.0.11.slave-oper
+# bit  |  OUT  |  FALSE    |    lcec.0.11.slave-state-init
+# bit  |  OUT  |  TRUE    |    lcec.0.11.slave-state-op
+# bit  |  OUT  |  FALSE    |    lcec.0.11.slave-state-preop
+# bit  |  OUT  |  FALSE    |    lcec.0.11.slave-state-safeop
