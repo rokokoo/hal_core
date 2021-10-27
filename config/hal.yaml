@@ -18,7 +18,7 @@ hal:
         - name: "motor2"
     - EL9576
     - EL6900:
-        # - name: "safety"
+        - name: "safety"
         - modParam:
             - fsoeSlaveIdx: 11
             - fsoeSlaveIdx: 12
