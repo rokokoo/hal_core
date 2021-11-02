@@ -61,7 +61,7 @@ with open(hal_config, "r") as stream:
         xml_o = xml_o.format(
             masteridx=master['idx'], apptimeperiod=master['apptimeperiod'], refclocksynccycles=master['refclocksync'])
         # print(xml_o)
-        f = open('hal.xml', 'w')
+        f = open('../rtlib/ethercat-conf.xml', 'w')
         f.write(xml_o)
         f.close()
     except yaml.YAMLError as exc:
