@@ -19,6 +19,7 @@ To install:
 
 	Install hal-core:
 	$ git clone https://github.com/grotius-cnc/hal_core.git /opt/hal-core
+	$ sudo chown -R $USER:$USER /opt
 	$ /opt/hal-core/./make
 	
 To run:
