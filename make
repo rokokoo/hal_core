@@ -12,11 +12,15 @@ cd /opt/hal-core/src/
 ./make && sudo make setuid
 
 # Compile cROS and copy shared library
-mkdir /opt/hal-core/src/hal/components/cros/build
-cd /opt/hal-core/src/hal/components/cros/build && cmake ..
-chmod +x /opt/hal-core/src/hal/components/cros/build/make
-cd /opt/hal-core/src/hal/components/cros/build/ && ./make && \
-cp /opt/hal_core/src/hal/components/cros/build/libcros.so /opt/hal_core/lib/
+if [ -f /opt/hal-core/src/hal/components/cros/build/libcros.so ]; then
+	echo "Exist!"
+else
+  mkdir /opt/hal-core/src/hal/components/cros/build
+  cd /opt/hal-core/src/hal/components/cros/build && cmake ..
+  chmod +x /opt/hal-core/src/hal/components/cros/build/make
+  cd /opt/hal-core/src/hal/components/cros/build/ && ./make
+  cp /opt/hal-core/src/hal/components/cros/build/libcros.so /opt/hal-core/lib/
+fi
 
 # Compile test component: 
 chmod +x /opt/hal-core/src/hal/components/test/make
