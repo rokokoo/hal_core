@@ -19,6 +19,7 @@ To install:
 	$ git clone https://github.com/jjrbfi/hal-core.git /opt/hal-core
 	$ sudo chown -R $USER:$USER /opt
 	$ /opt/hal-core/./make
+	$ sudo chown -R $USER:$USER /opt/hal-core
 	
 Before run:
 Modify config/hal.yaml file with your Hardware configuration and then run hal_config.py to create our .xml
