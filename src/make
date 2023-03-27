@@ -54,7 +54,7 @@ gcc -c -I. -Irtapi -Ihal -Os -fwrapv -g -Wall -DULAPI -std=gnu99 -fgnu89-inline 
 # Creating shared library libhalcore.so.0
 gcc -L/opt/hal-core/lib -Wl,-rpath,/opt/hal-core/lib -Wl,-soname,libhalcore.so.0 -shared -o ../lib/libhalcore.so.0 objects/hal/hal_lib.o objects/rtapi/uspace_ulapi.o -pthread -lrt 
 # Linking halcmd
-gcc -L/opt/hal-core/lib -Wl,-rpath,/opt/hal-core/lib -o ../bin/halcmd objects/hal/utils/halcmd.o objects/hal/utils/halcmd_commands.o objects/hal/utils/halcmd_main.o objects/hal/utils/halcmd_completion.o ../lib/libhalcore.so.0 -lreadline
+gcc -L/opt/hal-core/lib -Wl,-rpath,/opt/hal-core/lib -o ../bin/halcmd objects/hal/utils/halcmd.o objects/hal/utils/halcmd_commands.o objects/hal/utils/halcmd_main.o objects/hal/utils/halcmd_completion.o ../lib/libcros.so ../lib/libhalcore.so.0 -lreadline
 ln -sf libhalcore.so.0 ../lib/libhalcore.so
 
 # Compiling module_helper/module_helper.c
