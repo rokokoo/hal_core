@@ -11,6 +11,11 @@ cd /opt/hal-core/src/
 ./configure --disable-gtk --with-realtime=uspace
 ./make && sudo make setuid
 
+# Comopile cROS and copy shared library
+mkdir /opt/hal-core/src/hal/components/cros/build
+cd /opt/hal-core/src/hal/components/cros/build && cmake ..
+chmod +x /opt/hal-core/src/hal/components/cros/make
+cd /opt/hal-core/src/hal/components/cros/ && ./make
 
 # Compile test component: 
 chmod +x /opt/hal-core/src/hal/components/test/make
