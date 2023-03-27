@@ -22,7 +22,9 @@ To install:
 	$ sudo chown -R $USER:$USER /opt/hal-core
 	
 Before run:
-Modify config/hal.yaml file with your Hardware configuration and then run hal_config.py to create our .xml
+1. Modify **config/hal.yaml** file with your Hardware configuration and then run **hal_config.py** to create our .xml
+2. Run ROScore and keep it in the backgroundwith: ```roscore &```
+
 
 To run:
 
