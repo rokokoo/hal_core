@@ -13,12 +13,10 @@ A hal environment can be used as platform to run realtime applications like:
 
 Packages needed for the installation (at the bottom):
 
-https://github.com/grotius-cnc/hal_core/tree/main/src#readme
-
 To install:
 
 	Install hal-core:
-	$ git clone https://github.com/grotius-cnc/hal_core.git /opt/hal-core
+	$ git clone https://github.com/jjrbfi/hal-core.git /opt/hal-core
 	$ sudo chown -R $USER:$USER /opt
 	$ /opt/hal-core/./make
 	
