@@ -20,6 +20,9 @@ To install:
 	$ sudo chown -R $USER:$USER /opt
 	$ /opt/hal-core/./make
 	
+Before run:
+Modify config/hal.yaml file with your Hardware configuration and then run hal_config.py to create our .xml
+
 To run:
 
 	$ /opt/hal-core/./runtest
