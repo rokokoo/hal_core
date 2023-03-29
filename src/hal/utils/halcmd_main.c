@@ -59,6 +59,19 @@
 #include <fnmatch.h>
 #include <search.h>
 
+// cROS
+#include "cros.h"
+#include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+
+#define DIR_SEPARATOR_STR "/"
+#define ROS_MASTER_PORT 11311
+#define ROS_MASTER_ADDRESS "127.0.0.1"
+
+CrosNode *node; //! Pointer to object storing the ROS node. This object includes all the ROS node state variables
+static unsigned char exit_flag = 0; //! ROS node loop exit flag. When set to 1 the cRosNodeStart() function exits
+
 static int get_input(FILE *srcfile, char *buf, size_t bufsize);
 static void print_help_general(int showR);
 static int release_HAL_mutex(void);
@@ -71,9 +84,123 @@ static char *prompt_continue    = "halcmd+: ";
 
 #define MAX_EXTEND_LINES 20
 
+
+/***********************************************************************
+*                   cROS FUNCTION DEFINITIONS                         *
+************************************************************************/
+
+// This callback will be invoked when the subscriber receives a message
+static CallbackResponse callback_sub(cRosMessage *message, void* data_context)
+{
+    int retval;
+    char *tokens[MAX_TOK+1];
+
+    cRosMessageField *data_field = cRosMessageGetField(message, "data");
+    if(data_field != NULL)
+        ROS_INFO(node, "I heard: [%s]\n", data_field->data.as_string);
+        halcmd_startup(1);
+        // remove comments, do var substitution, and tokenise
+        retval = halcmd_preprocess_line(data_field->data.as_string, tokens);
+        // Run the command
+        retval = halcmd_parse_cmd(tokens);
+}
+
+struct sigaction old_int_signal_handler, old_term_signal_handler; //! Structures codifying the original handlers of SIGINT and SIGTERM signals (e.g. used when pressing Ctrl-C for the second time);
+
+// This callback function will be called when the main process receives a SIGINT or
+// SIGTERM signal.
+// Function set_signal_handler() should be called to set this function as the handler of
+// these signals
+static void exit_deamon_handler(int sig)
+{
+  printf("Signal %i received: exiting safely.\n", sig);
+  sigaction(SIGINT, &old_int_signal_handler, NULL);
+  sigaction(SIGTERM, &old_term_signal_handler, NULL);
+  exit_flag = 1; // Indicate the exit of cRosNodeStart loop (safe exit)
+}
+
+// Sets the signal handler functions of SIGINT and SIGTERM: exit_deamon_handler
+static int set_signal_handler(void)
+  {
+   int ret;
+   struct sigaction act;
+
+   memset (&act, '\0', sizeof(act));
+
+   act.sa_handler = exit_deamon_handler;
+   // If the signal handler is invoked while a system call or library function call is blocked,
+   // then the we want the call to be automatically restarted after the signal handler returns
+   // instead of making the call fail with the error EINTR.
+   act.sa_flags=SA_RESTART;
+   if(sigaction(SIGINT, &act, &old_int_signal_handler) == 0 && sigaction(SIGTERM, &act,  &old_term_signal_handler) == 0)
+      ret=0;
+   else
+     {
+      ret=errno;
+      printf("Error setting termination signal handler. errno=%d\n",ret);
+     }
+   return(ret);
+  }
+
+
 /***********************************************************************
 *                   LOCAL FUNCTION DEFINITIONS                         *
 ************************************************************************/
+
+int cros_main(){
+    char path[4097]; // We need to tell our node where to find the .msg files that we'll be using
+    const char *node_name;
+    int subidx; // Index (identifier) of the created subscriber
+    cRosErrCodePack err_cod;
+
+    node_name="/listener"; // Default node name if no command-line parameters are specified
+    getcwd(path, sizeof(path));
+    strncat(path, DIR_SEPARATOR_STR"rosdb", sizeof(path) - strlen(path) - 1);
+
+    printf("Using the following path for message definitions: %s\n", path);
+    // Create a new node and tell it to connect to roscore in the usual place
+    node = cRosNodeCreate(node_name, "127.0.0.1", ROS_MASTER_ADDRESS, ROS_MASTER_PORT, path);
+    if( node == NULL )
+    {
+        printf("cRosNodeCreate() failed; is this program already being run?");
+        return EXIT_FAILURE;
+    }
+
+    err_cod = cRosWaitPortOpen(ROS_MASTER_ADDRESS, ROS_MASTER_PORT, 0);
+    if(err_cod != CROS_SUCCESS_ERR_PACK)
+    {
+        cRosPrintErrCodePack(err_cod, "Port %s:%hu cannot be opened: ROS Master does not seems to be running", ROS_MASTER_ADDRESS, ROS_MASTER_PORT);
+        return EXIT_FAILURE;
+    }
+
+    // Create a subscriber to topic /chatter of type "std_msgs/String" and supply a callback for received messages (callback_sub)
+    err_cod = cRosApiRegisterSubscriber(node, "/chatter", "std_msgs/String", callback_sub, NULL, NULL, 0, &subidx);
+    if(err_cod != CROS_SUCCESS_ERR_PACK)
+    {
+        cRosPrintErrCodePack(err_cod, "cRosApiRegisterSubscriber() failed; did you run this program one directory above 'rosdb'?");
+        cRosNodeDestroy( node );
+        return EXIT_FAILURE;
+    }
+
+    ROS_INFO(node, "Node %s created with XMLRPC port: %i, TCPROS port: %i and RPCROS port: %i\n", node->name, node->xmlrpc_port, node->tcpros_port, node->rpcros_port);
+
+    // Function exit_deamon_handler() will be called when Ctrl-C is pressed or kill is executed
+    set_signal_handler();
+
+    // Run the main loop until exit_flag is 1
+    err_cod = cRosNodeStart( node, CROS_INFINITE_TIMEOUT, &exit_flag );
+    if(err_cod != CROS_SUCCESS_ERR_PACK)
+        cRosPrintErrCodePack(err_cod, "cRosNodeStart() returned an error code");
+
+    // Free memory and unregister
+    err_cod=cRosNodeDestroy( node );
+    if(err_cod != CROS_SUCCESS_ERR_PACK)
+    {
+        cRosPrintErrCodePack(err_cod, "cRosNodeDestroy() failed; Error unregistering from ROS master");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;;
+}
 
 int main(int argc, char **argv)
 {
@@ -97,7 +224,7 @@ int main(int argc, char **argv)
     keep_going = 0;
     /* start parsing the command line, options first */
     while(1) {
-        c = getopt(argc, argv, "+RCfi:kqQsvVhe");
+        c = getopt(argc, argv, "+RCfri:kqQsvVhe");
         if(c == -1) break;
         switch(c) {
             case 'R':
@@ -147,6 +274,9 @@ int main(int argc, char **argv)
 	    case 'f':
                 filemode = 1;
 		break;
+        case 'r':
+                cros_main();
+        break;
 	    case 'C':
                 cl = getenv("COMP_LINE");
                 cw = getenv("COMP_POINT");
@@ -276,7 +406,6 @@ int main(int argc, char **argv)
             if (!extend_ct) { elineptr = (char*)raw_buf; }
             extend_ct = 0;
             if (prompt == prompt_continue) { prompt = prompt_interactive; }
-
 	    /* remove comments, do var substitution, and tokenise */
 	    retval = halcmd_preprocess_line(elineptr, tokens);
 	    if(echo_mode) {
@@ -390,6 +519,7 @@ static void print_help_general(int showR)
     printf("  -e             echo the commands from stdin to stderr\n");
     printf("  -f [filename]  Read commands from 'filename', not command\n");
     printf("                 line.  If no filename, read from stdin.\n");
+    printf("  -r             Start ROS listener (roscore have to be running)\n");
 #ifndef NO_INI
     printf("  -i filename    Open .ini file 'filename', allow commands\n");
     printf("                 to get their values from ini file.\n");
@@ -444,6 +574,7 @@ static int get_input(FILE *srcfile, char *buf, size_t bufsize) {
     return fgets(buf, bufsize, srcfile) != NULL;
 }
 #endif
+
 
 void halcmd_output(const char *format, ...) {
     va_list ap;
