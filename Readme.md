@@ -27,7 +27,7 @@ The installed size is approx 7Mib
 	
 ### Before run:
 1. Modify **config/hal.yaml** file with your Hardware configuration and then run **hal_config.py** to create our .xml
-2. Run ROScore and keep it in the backgroundwith: ```roscore &```
+2. Run ROScore and keep it in the background with: ```roscore &```
 
 
 ### To run:
