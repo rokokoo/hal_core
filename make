@@ -16,7 +16,6 @@ else
   cd /opt/hal-core/src/hal/components/cros/build && cmake ..
   cd /opt/hal-core/src/hal/components/cros/build/ && make
   ln -s /opt/hal-core/src/hal/components/cros/build/libcros.so /opt/hal-core/lib/
-  ln -s /opt/hal-core/src/hal/components/cros/samples/rosdb/ /opt/hal-core/
   ln -s /opt/hal-core/src/hal/components/cros/include/ /opt/hal-core/src/cros
 fi
 
