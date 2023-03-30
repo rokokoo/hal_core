@@ -103,6 +103,8 @@ static CallbackResponse callback_sub(cRosMessage *message, void* data_context)
         retval = halcmd_preprocess_line(data_field->data.as_string, tokens);
         // Run the command
         retval = halcmd_parse_cmd(tokens);
+
+    return 0; // 0=success
 }
 
 struct sigaction old_int_signal_handler, old_term_signal_handler; //! Structures codifying the original handlers of SIGINT and SIGTERM signals (e.g. used when pressing Ctrl-C for the second time);
