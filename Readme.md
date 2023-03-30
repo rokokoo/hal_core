@@ -23,10 +23,11 @@ The installed size is approx 7Mib
 	$ git clone --recursive https://github.com/jjrbfi/hal-core.git /opt/hal-core
 	$ cd /op/hal-core/
 	$ sudo ./make
+	$ sudo chown -R $USER:$USER /opt/hal-core/
 	
 ### Before run:
 1. Modify **config/hal.yaml** file with your Hardware configuration and then run **hal_config.py** to create our .xml
-2. Run ROScore and keep it in the backgroundwith: ```roscore &```
+2. Run ROScore and keep it in the background with: ```roscore &```
 
 
 ### To run:
