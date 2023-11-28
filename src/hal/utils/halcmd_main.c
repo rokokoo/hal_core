@@ -104,6 +104,7 @@ static CallbackResponse callback_sub(cRosMessage *message, void* data_context)
         retval = halcmd_preprocess_line(data_field->data.as_string, tokens);
         // Run the command
         retval = halcmd_parse_cmd(tokens);
+        return 0; // 0=success
     }
 }
 
@@ -150,14 +151,15 @@ static int set_signal_handler(void)
 ************************************************************************/
 
 int cros_main(){
-    char path[4097]; // We need to tell our node where to find the .msg files that we'll be using
+    //char path[4097]; // We need to tell our node where to find the .msg files that we'll be using
+    char *path="/opt/hal-core/src/hal/components/cros/samples/rosdb/";
     const char *node_name;
     int subidx; // Index (identifier) of the created subscriber
     cRosErrCodePack err_cod;
 
     node_name="/listener"; // Default node name if no command-line parameters are specified
-    getcwd(path, sizeof(path));
-    strncat(path, DIR_SEPARATOR_STR"rosdb", sizeof(path) - strlen(path) - 1);
+    //getcwd(path, sizeof(path));
+    //strncat(path, DIR_SEPARATOR_STR"rosdb", sizeof(path) - strlen(path) - 1);
 
     printf("Using the following path for message definitions: %s\n", path);
     // Create a new node and tell it to connect to roscore in the usual place
@@ -278,7 +280,7 @@ int main(int argc, char **argv)
 		break;
         case 'r':
                 cros_main();
-        break;
+                break;
 	    case 'C':
                 cl = getenv("COMP_LINE");
                 cw = getenv("COMP_POINT");

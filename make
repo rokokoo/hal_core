@@ -8,6 +8,17 @@ chmod +x /opt/hal-core/src/configure
 chmod +x /opt/hal-core/scripts/halrun
 chmod +x /opt/hal-core/scripts/realtime
 
+# Compile cROS and copy shared library
+if [ -f /opt/hal-core/src/hal/components/cros/build/libcros.so ]; then
+	echo "Exist!"
+else
+  mkdir /opt/hal-core/src/hal/components/cros/build
+  cd /opt/hal-core/src/hal/components/cros/build && cmake ..
+  cd /opt/hal-core/src/hal/components/cros/build/ && make
+  ln -s /opt/hal-core/src/hal/components/cros/build/libcros.so /opt/hal-core/lib/
+  ln -s /opt/hal-core/src/hal/components/cros/include/ /opt/hal-core/src/cros
+fi
+
 # Compile hal-core
 cd /opt/hal-core/src/
 ./configure --disable-gtk --with-realtime=uspace
@@ -18,19 +29,6 @@ chown 777 -R /opt/hal-core/bin/rtapi_app
 chown 777 -R /opt/hal-core/bin/module_helper
 chmod 777 /opt/hal-core/bin/rtapi_app
 chmod 777 /opt/hal-core/bin/module_helper 
-
-# Compile cROS and copy shared library
-if [ -f /opt/hal-core/src/hal/components/cros/build/libcros.so ]; then
-	echo "Exist!"
-else
-  mkdir /opt/hal-core/src/hal/components/cros/build
-  cd /opt/hal-core/src/hal/components/cros/build && cmake ..
-  chmod +x /opt/hal-core/src/hal/components/cros/build/make
-  cd /opt/hal-core/src/hal/components/cros/build/ && ./make
-  ln -s /opt/hal-core/src/hal/components/cros/build/libcros.so /opt/hal-core/lib/
-  ln -s /opt/hal-core/src/hal/components/cros/samples/rosdb/ /opt/hal-core/
-  ln -s /opt/hal-core/src/hal/components/cros/include/ /opt/hal-core/src/cros
-fi
 
 # Compile test component: 
 chmod +x /opt/hal-core/src/hal/components/test/make

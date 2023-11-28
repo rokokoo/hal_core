@@ -35,7 +35,7 @@ gcc -c -I. -Irtapi -Ihal -Os -fwrapv -g -Wall -DULAPI -std=gnu99 -fgnu89-inline 
         -MP -MD -MF "objects/hal/utils/halcmd_commands.d" -MT "objects/hal/utils/halcmd_commands.o" \
         hal/utils/halcmd_commands.c -o objects/hal/utils/halcmd_commands.o
 # Compiling hal/utils/halcmd_main.c
-gcc -c -I. -Irtapi -Ihal -Os -fwrapv -g -Wall -DULAPI -std=gnu99 -fgnu89-inline -Werror=implicit-function-declaration -g -O2 \
+gcc -c -I. -Icros -Irtapi -Ihal -Os -fwrapv -g -Wall -DULAPI -std=gnu99 -fgnu89-inline -Werror=implicit-function-declaration -g -O2 \
         -MP -MD -MF "objects/hal/utils/halcmd_main.d" -MT "objects/hal/utils/halcmd_main.o" \
         hal/utils/halcmd_main.c -o objects/hal/utils/halcmd_main.o
 # Compiling hal/utils/halcmd_completion.c
