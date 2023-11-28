@@ -97,12 +97,14 @@ static CallbackResponse callback_sub(cRosMessage *message, void* data_context)
 
     cRosMessageField *data_field = cRosMessageGetField(message, "data");
     if(data_field != NULL)
+    {
         ROS_INFO(node, "I heard: [%s]\n", data_field->data.as_string);
         halcmd_startup(1);
         // remove comments, do var substitution, and tokenise
         retval = halcmd_preprocess_line(data_field->data.as_string, tokens);
         // Run the command
         retval = halcmd_parse_cmd(tokens);
+    }
 }
 
 struct sigaction old_int_signal_handler, old_term_signal_handler; //! Structures codifying the original handlers of SIGINT and SIGTERM signals (e.g. used when pressing Ctrl-C for the second time);
