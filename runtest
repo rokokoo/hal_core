@@ -1,9 +1,23 @@
 #!/usr/bin/bash
 
+# Startup hal-core
 cd /opt/hal-core/scripts/ && . ./rip-environment
 
-
 cd /opt/hal-core/bin
+
+halcmd stop
+halcmd loadrt threads name1=base-thread fp1=0 period1=1000000
+#name2=servo-thread period2=1
+
+# Unix command to load the ethercat .xml config
+/opt/hal-core/rtlib/./lcec_conf /opt/hal-core/rtlib/ethercat-conf.xml &
+halcmd loadrt lcec
+#halcmd loadrt test
+
+halcmd addf lcec.read-all base-thread
+halcmd addf lcec.write-all base-thread
+
+halcmd start
 
 halcmd show
 

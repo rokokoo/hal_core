@@ -1,0 +1,3 @@
+[submodule "src/hal/components/cros"]
+	path = src/hal/components/cros
+	url = git@github.com:jjrbfi/cros.git
